@@ -1,0 +1,185 @@
+###############################################################################
+# API ProvaFinalAbilio — coleção de testes de todas as rotas
+#
+# Como usar:
+#   - VS Code: instale a extensão "REST Client" e clique em "Send Request"
+#     acima de cada bloco.
+#   - JetBrains (WebStorm/IntelliJ): abra este arquivo e use o ícone ▶.
+#
+# Fluxo recomendado: rode (2) REGISTRO ou (3) LOGIN primeiro — o token é
+# capturado automaticamente na variável {{token}} e reutilizado nas rotas
+# autenticadas.
+#
+# Ajuste @host caso o servidor suba em outra porta (o `node ace serve`
+# mostra a porta no terminal; a porta configurada é 3333).
+###############################################################################
+
+@host = http://localhost:3333
+@api = {{host}}/api/v1
+
+# Capturados das respostas (não precisa editar):
+@token = {{registro.response.body.data.token}}
+@participanteId = {{registro.response.body.data.participante.id}}
+@eventoId = {{criarEvento.response.body.id}}
+@inscricaoId = {{inscrever.response.body.id}}
+
+
+### 1) Healthcheck (público)
+GET {{host}}/
+
+
+### 2) REGISTRO de participante (público)  ->  POST /participantes
+# @name registro
+POST {{api}}/participantes
+Content-Type: application/json
+
+{
+  "nome": "Maria Silva",
+  "email": "maria@example.com",
+  "senha": "segredo123",
+  "dataNasc": "2000-05-10"
+}
+
+
+### 3) LOGIN (público)  ->  POST /participantes/login
+# @name login
+POST {{api}}/participantes/login
+Content-Type: application/json
+
+{
+  "email": "maria@example.com",
+  "senha": "segredo123"
+}
+
+
+### 4) LISTAR participantes (público)  ->  GET /participantes
+GET {{api}}/participantes
+
+
+### 5) DETALHE do participante (autenticado)  ->  GET /participantes/:id
+GET {{api}}/participantes/{{participanteId}}
+Authorization: Bearer {{token}}
+
+
+### 6) ATUALIZAR participante (autenticado)  ->  PUT /participantes/:id
+PUT {{api}}/participantes/{{participanteId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "nome": "Maria Atualizada",
+  "email": "maria@example.com",
+  "senha": "segredo123",
+  "dataNasc": "2000-05-10"
+}
+
+
+### 7) PERFIL do logado (autenticado)  ->  GET /account/profile
+GET {{api}}/account/profile
+Authorization: Bearer {{token}}
+
+
+### 8) CRIAR evento (autenticado)  ->  POST /eventos
+# @name criarEvento
+POST {{api}}/eventos
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "nome": "Workshop AdonisJS",
+  "descricao": "API REST do zero",
+  "dataInicio": "2026-07-01",
+  "dataFinal": "2026-07-02",
+  "local": "Online"
+}
+
+
+### 9) LISTAR eventos (público)  ->  GET /eventos
+# Obs: o index retorna apenas eventos já encerrados (dataFinal < agora).
+GET {{api}}/eventos
+
+
+### 10) DETALHE do evento (público)  ->  GET /eventos/:id
+GET {{api}}/eventos/{{eventoId}}
+
+
+### 11) ATUALIZAR evento (autenticado, só o organizador)  ->  PUT /eventos/:id
+PUT {{api}}/eventos/{{eventoId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "nome": "Workshop AdonisJS v7",
+  "descricao": "API REST do zero (atualizado)",
+  "dataInicio": "2026-07-01",
+  "dataFinal": "2026-07-02",
+  "local": "Presencial"
+}
+
+
+### 12) INSCREVER-SE no evento (autenticado)  ->  POST /eventos/:id/inscricoes
+# Sem corpo: o participante vem do token e o evento vem do :id da URL.
+# @name inscrever
+POST {{api}}/eventos/{{eventoId}}/inscricoes
+Authorization: Bearer {{token}}
+
+
+### 13) MINHAS inscrições (autenticado)  ->  GET /inscricoes
+GET {{api}}/inscricoes
+Authorization: Bearer {{token}}
+
+
+### 14) DETALHE da inscrição (autenticado)  ->  GET /inscricoes/:id
+GET {{api}}/inscricoes/{{inscricaoId}}
+Authorization: Bearer {{token}}
+
+
+### 15) CANCELAR inscrição (autenticado)  ->  DELETE /inscricoes/:id
+DELETE {{api}}/inscricoes/{{inscricaoId}}
+Authorization: Bearer {{token}}
+
+
+### 16) DELETAR evento (autenticado, só o organizador)  ->  DELETE /eventos/:id
+DELETE {{api}}/eventos/{{eventoId}}
+Authorization: Bearer {{token}}
+
+
+### 17) DELETAR participante (autenticado)  ->  DELETE /participantes/:id
+DELETE {{api}}/participantes/{{participanteId}}
+Authorization: Bearer {{token}}
+
+
+### 18) LOGOUT (autenticado)  ->  POST /account/logout
+POST {{api}}/account/logout
+Authorization: Bearer {{token}}
+
+
+###############################################################################
+# Casos negativos (para validar auth e validações)
+###############################################################################
+
+### 19) Login com senha errada (espera 400)
+POST {{api}}/participantes/login
+Content-Type: application/json
+
+{
+  "email": "maria@example.com",
+  "senha": "errada"
+}
+
+
+### 20) Rota autenticada sem token (espera 401)
+GET {{api}}/account/profile
+
+
+### 21) Criar evento sem token (espera 401)
+POST {{api}}/eventos
+Content-Type: application/json
+
+{
+  "nome": "x",
+  "descricao": "y",
+  "dataInicio": "2026-07-01",
+  "dataFinal": "2026-07-02",
+  "local": "z"
+}

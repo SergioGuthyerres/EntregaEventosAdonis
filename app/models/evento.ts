@@ -6,8 +6,8 @@ import Participante from './participante.ts'
 
 export default class Evento extends EventoSchema {
   static table = 'eventos'
-  @belongsTo(() => Participante)
+  @belongsTo(() => Participante, { foreignKey: 'idOrganizador' })
   declare participante: BelongsTo<typeof Participante>
-  @hasMany(() => Inscricao)
+  @hasMany(() => Inscricao, { foreignKey: 'idEvento' })
   declare inscricoes: HasMany<typeof Inscricao>
 }

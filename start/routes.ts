@@ -17,20 +17,11 @@ router.get('/', () => {
 
 router
   .group(() => {
-    // Auth
-    router
-      .group(() => {
-        router.post('signup', [controllers.NewAccount, 'store'])
-        router.post('login', [controllers.AccessTokens, 'store'])
-      })
-      .prefix('auth')
-      .as('auth')
-
     // Account
     router
       .group(() => {
         router.get('profile', [controllers.Profile, 'show'])
-        router.post('logout', [controllers.AccessTokens, 'destroy'])
+        router.post('logout', [controllers.Participantes, 'logout'])
       })
       .prefix('account')
       .as('profile')
@@ -39,11 +30,15 @@ router
     // Participantes
     router
       .group(() => {
-        router.get('/', [controllers.Participantes, 'index'])
+        // Rotas públicas — registro e login (estáticas antes das dinâmicas)
         router.post('/', [controllers.Participantes, 'store'])
-        router.get('/:id', [controllers.Participantes, 'show'])
-        router.put('/:id', [controllers.Participantes, 'update'])
-        router.delete('/:id', [controllers.Participantes, 'destroy'])
+        router.post('/login', [controllers.Participantes, 'login'])
+
+        // Rotas autenticadas
+        router.get('/', [controllers.Participantes, 'index'])
+        router.get('/:id', [controllers.Participantes, 'show']).use(middleware.auth())
+        router.put('/:id', [controllers.Participantes, 'update']).use(middleware.auth())
+        router.delete('/:id', [controllers.Participantes, 'destroy']).use(middleware.auth())
       })
       .prefix('participantes')
       .as('participantes')

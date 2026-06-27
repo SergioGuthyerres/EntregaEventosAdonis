@@ -7,30 +7,6 @@ import type { InferInput, SimpleError } from '@vinejs/vine/types'
 export type ParamValue = string | number | bigint | boolean
 
 export interface Registry {
-  'auth.new_account.store': {
-    methods: ["POST"]
-    pattern: '/api/v1/auth/signup'
-    types: {
-      body: ExtractBody<InferInput<(typeof import('#validators/participante').signupValidator)>>
-      paramsTuple: []
-      params: {}
-      query: ExtractQuery<InferInput<(typeof import('#validators/participante').signupValidator)>>
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/new_account_controller').default['store']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/new_account_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
-    }
-  }
-  'auth.access_tokens.store': {
-    methods: ["POST"]
-    pattern: '/api/v1/auth/login'
-    types: {
-      body: ExtractBody<InferInput<(typeof import('#validators/participante').loginValidator)>>
-      paramsTuple: []
-      params: {}
-      query: ExtractQuery<InferInput<(typeof import('#validators/participante').loginValidator)>>
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/access_tokens_controller').default['store']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/access_tokens_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
-    }
-  }
   'profile.profile.show': {
     methods: ["GET","HEAD"]
     pattern: '/api/v1/account/profile'
@@ -43,7 +19,7 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/profile_controller').default['show']>>>
     }
   }
-  'profile.access_tokens.destroy': {
+  'profile.participantes.logout': {
     methods: ["POST"]
     pattern: '/api/v1/account/logout'
     types: {
@@ -51,20 +27,8 @@ export interface Registry {
       paramsTuple: []
       params: {}
       query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/access_tokens_controller').default['destroy']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/access_tokens_controller').default['destroy']>>>
-    }
-  }
-  'participantes.participantes.index': {
-    methods: ["GET","HEAD"]
-    pattern: '/api/v1/participantes'
-    types: {
-      body: {}
-      paramsTuple: []
-      params: {}
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/participantes_controller').default['index']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/participantes_controller').default['index']>>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/participantes_controller').default['logout']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/participantes_controller').default['logout']>>>
     }
   }
   'participantes.participantes.store': {
@@ -77,6 +41,30 @@ export interface Registry {
       query: ExtractQuery<InferInput<(typeof import('#validators/participante').signupValidator)>>
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/participantes_controller').default['store']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/participantes_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'participantes.participantes.login': {
+    methods: ["POST"]
+    pattern: '/api/v1/participantes/login'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/participante').loginValidator)>>
+      paramsTuple: []
+      params: {}
+      query: ExtractQuery<InferInput<(typeof import('#validators/participante').loginValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/participantes_controller').default['login']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/participantes_controller').default['login']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'participantes.participantes.index': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/v1/participantes'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/participantes_controller').default['index']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/participantes_controller').default['index']>>>
     }
   }
   'participantes.participantes.show': {
@@ -95,10 +83,10 @@ export interface Registry {
     methods: ["PUT"]
     pattern: '/api/v1/participantes/:id'
     types: {
-      body: ExtractBody<InferInput<(typeof import('#validators/participante').signupValidator)>>
+      body: ExtractBody<InferInput<(typeof import('#validators/participante').updateValidator)>>
       paramsTuple: [ParamValue]
       params: { id: ParamValue }
-      query: ExtractQuery<InferInput<(typeof import('#validators/participante').signupValidator)>>
+      query: ExtractQuery<InferInput<(typeof import('#validators/participante').updateValidator)>>
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/participantes_controller').default['update']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/participantes_controller').default['update']>>> | { status: 422; response: { errors: SimpleError[] } }
     }

@@ -4,10 +4,8 @@
  */
 
 export const controllers = {
-  AccessTokens: () => import('#controllers/access_tokens_controller'),
   Eventos: () => import('#controllers/eventos_controller'),
   Inscricaos: () => import('#controllers/inscricaos_controller'),
-  NewAccount: () => import('#controllers/new_account_controller'),
   Participantes: () => import('#controllers/participantes_controller'),
   Profile: () => import('#controllers/profile_controller'),
 }

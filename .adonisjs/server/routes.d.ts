@@ -4,12 +4,11 @@ type ParamValue = string | number | bigint | boolean
 
 export type ScannedRoutes = {
   ALL: {
-    'auth.new_account.store': { paramsTuple?: []; params?: {} }
-    'auth.access_tokens.store': { paramsTuple?: []; params?: {} }
     'profile.profile.show': { paramsTuple?: []; params?: {} }
-    'profile.access_tokens.destroy': { paramsTuple?: []; params?: {} }
-    'participantes.participantes.index': { paramsTuple?: []; params?: {} }
+    'profile.participantes.logout': { paramsTuple?: []; params?: {} }
     'participantes.participantes.store': { paramsTuple?: []; params?: {} }
+    'participantes.participantes.login': { paramsTuple?: []; params?: {} }
+    'participantes.participantes.index': { paramsTuple?: []; params?: {} }
     'participantes.participantes.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'participantes.participantes.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'participantes.participantes.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -42,10 +41,9 @@ export type ScannedRoutes = {
     'inscricoes.inscricaos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
   POST: {
-    'auth.new_account.store': { paramsTuple?: []; params?: {} }
-    'auth.access_tokens.store': { paramsTuple?: []; params?: {} }
-    'profile.access_tokens.destroy': { paramsTuple?: []; params?: {} }
+    'profile.participantes.logout': { paramsTuple?: []; params?: {} }
     'participantes.participantes.store': { paramsTuple?: []; params?: {} }
+    'participantes.participantes.login': { paramsTuple?: []; params?: {} }
     'eventos.eventos.store': { paramsTuple?: []; params?: {} }
     'eventos.inscricaos.store': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }

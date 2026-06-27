@@ -7,11 +7,9 @@ export default class ParticipanteTransformer extends BaseTransformer<Participant
       'id',
       'nome',
       'email',
-      'senha',
       'dataNasc',
       'createdAt',
       'updatedAt',
-      'initials',
     ])
   }
 }

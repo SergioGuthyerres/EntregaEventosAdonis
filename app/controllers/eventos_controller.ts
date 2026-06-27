@@ -4,17 +4,8 @@ import { createEventValidator, updateEventValidator } from '#validators/evento'
 export default class EventosController {
   async index({}: HttpContext) {
     const eventos = await Evento.all()
-    const eventosValidos: Evento[] = []
-    const dataAtual = new Date()
 
-    eventos.map((evento) => {
-      const dataFimEvento = new Date(evento.dataFinal.toJSDate())
-
-      if (dataAtual.getTime() > dataFimEvento.getTime()) {
-        eventosValidos.push(evento)
-      }
-    })
-    return eventosValidos
+    return eventos
   }
 
   async store({ request, auth }: HttpContext) {
@@ -37,7 +28,7 @@ export default class EventosController {
       const evento = await Evento.findByOrFail('id', params.id)
       return evento
     } catch {
-      return response.status(404).json('evento not found')
+      return response.status(404).json({ error: 'evento not found' })
     }
   }
 
