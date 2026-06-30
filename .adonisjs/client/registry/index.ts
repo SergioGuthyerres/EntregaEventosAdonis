@@ -44,14 +44,14 @@ const routes = {
   },
   'participantes.participantes.update': {
     methods: ["PUT"],
-    pattern: '/api/v1/participantes/:id',
-    tokens: [{"old":"/api/v1/participantes/:id","type":0,"val":"api","end":""},{"old":"/api/v1/participantes/:id","type":0,"val":"v1","end":""},{"old":"/api/v1/participantes/:id","type":0,"val":"participantes","end":""},{"old":"/api/v1/participantes/:id","type":1,"val":"id","end":""}],
+    pattern: '/api/v1/participantes',
+    tokens: [{"old":"/api/v1/participantes","type":0,"val":"api","end":""},{"old":"/api/v1/participantes","type":0,"val":"v1","end":""},{"old":"/api/v1/participantes","type":0,"val":"participantes","end":""}],
     types: placeholder as Registry['participantes.participantes.update']['types'],
   },
   'participantes.participantes.destroy': {
     methods: ["DELETE"],
-    pattern: '/api/v1/participantes/:id',
-    tokens: [{"old":"/api/v1/participantes/:id","type":0,"val":"api","end":""},{"old":"/api/v1/participantes/:id","type":0,"val":"v1","end":""},{"old":"/api/v1/participantes/:id","type":0,"val":"participantes","end":""},{"old":"/api/v1/participantes/:id","type":1,"val":"id","end":""}],
+    pattern: '/api/v1/participantes',
+    tokens: [{"old":"/api/v1/participantes","type":0,"val":"api","end":""},{"old":"/api/v1/participantes","type":0,"val":"v1","end":""},{"old":"/api/v1/participantes","type":0,"val":"participantes","end":""}],
     types: placeholder as Registry['participantes.participantes.destroy']['types'],
   },
   'eventos.eventos.index': {
@@ -65,6 +65,12 @@ const routes = {
     pattern: '/api/v1/eventos/:id',
     tokens: [{"old":"/api/v1/eventos/:id","type":0,"val":"api","end":""},{"old":"/api/v1/eventos/:id","type":0,"val":"v1","end":""},{"old":"/api/v1/eventos/:id","type":0,"val":"eventos","end":""},{"old":"/api/v1/eventos/:id","type":1,"val":"id","end":""}],
     types: placeholder as Registry['eventos.eventos.show']['types'],
+  },
+  'eventos.eventos.index_subs': {
+    methods: ["GET","HEAD"],
+    pattern: '/api/v1/eventos/inscritos/:id',
+    tokens: [{"old":"/api/v1/eventos/inscritos/:id","type":0,"val":"api","end":""},{"old":"/api/v1/eventos/inscritos/:id","type":0,"val":"v1","end":""},{"old":"/api/v1/eventos/inscritos/:id","type":0,"val":"eventos","end":""},{"old":"/api/v1/eventos/inscritos/:id","type":0,"val":"inscritos","end":""},{"old":"/api/v1/eventos/inscritos/:id","type":1,"val":"id","end":""}],
+    types: placeholder as Registry['eventos.eventos.index_subs']['types'],
   },
   'eventos.eventos.store': {
     methods: ["POST"],

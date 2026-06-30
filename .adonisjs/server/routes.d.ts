@@ -10,10 +10,11 @@ export type ScannedRoutes = {
     'participantes.participantes.login': { paramsTuple?: []; params?: {} }
     'participantes.participantes.index': { paramsTuple?: []; params?: {} }
     'participantes.participantes.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'participantes.participantes.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'participantes.participantes.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'participantes.participantes.update': { paramsTuple?: []; params?: {} }
+    'participantes.participantes.destroy': { paramsTuple?: []; params?: {} }
     'eventos.eventos.index': { paramsTuple?: []; params?: {} }
     'eventos.eventos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'eventos.eventos.index_subs': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'eventos.eventos.store': { paramsTuple?: []; params?: {} }
     'eventos.eventos.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'eventos.eventos.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -28,6 +29,7 @@ export type ScannedRoutes = {
     'participantes.participantes.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'eventos.eventos.index': { paramsTuple?: []; params?: {} }
     'eventos.eventos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'eventos.eventos.index_subs': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'inscricoes.inscricaos.index': { paramsTuple?: []; params?: {} }
     'inscricoes.inscricaos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
@@ -37,6 +39,7 @@ export type ScannedRoutes = {
     'participantes.participantes.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'eventos.eventos.index': { paramsTuple?: []; params?: {} }
     'eventos.eventos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'eventos.eventos.index_subs': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'inscricoes.inscricaos.index': { paramsTuple?: []; params?: {} }
     'inscricoes.inscricaos.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
@@ -48,11 +51,11 @@ export type ScannedRoutes = {
     'eventos.inscricaos.store': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
   PUT: {
-    'participantes.participantes.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'participantes.participantes.update': { paramsTuple?: []; params?: {} }
     'eventos.eventos.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
   DELETE: {
-    'participantes.participantes.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'participantes.participantes.destroy': { paramsTuple?: []; params?: {} }
     'eventos.eventos.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'inscricoes.inscricaos.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }

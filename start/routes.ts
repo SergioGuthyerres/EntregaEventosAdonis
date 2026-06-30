@@ -37,8 +37,8 @@ router
         // Rotas autenticadas
         router.get('/', [controllers.Participantes, 'index'])
         router.get('/:id', [controllers.Participantes, 'show']).use(middleware.auth())
-        router.put('/:id', [controllers.Participantes, 'update']).use(middleware.auth())
-        router.delete('/:id', [controllers.Participantes, 'destroy']).use(middleware.auth())
+        router.put('/', [controllers.Participantes, 'update']).use(middleware.auth())
+        router.delete('/', [controllers.Participantes, 'destroy']).use(middleware.auth())
       })
       .prefix('participantes')
       .as('participantes')
@@ -48,6 +48,7 @@ router
       .group(() => {
         router.get('/', [controllers.Eventos, 'index'])
         router.get('/:id', [controllers.Eventos, 'show'])
+        router.get('/:id', [controllers.Eventos, 'indexSubs']).prefix('inscritos')
         router.post('/', [controllers.Eventos, 'store']).use(middleware.auth())
         router.put('/:id', [controllers.Eventos, 'update']).use(middleware.auth())
         router.delete('/:id', [controllers.Eventos, 'destroy']).use(middleware.auth())

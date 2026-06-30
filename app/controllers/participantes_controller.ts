@@ -4,8 +4,10 @@ import type { HttpContext } from '@adonisjs/core/http'
 import ParticipanteTransformer from '#transformers/participante_transformer'
 
 export default class ParticipantesController {
-  async index({}: HttpContext) {
-    return await Participante.all()
+  async index({ response }: HttpContext) {
+    const participantes = await Participante.query().select('id', 'nome')
+
+    return response.ok(participantes)
   }
 
   /**
@@ -55,25 +57,32 @@ export default class ParticipantesController {
     return { message: 'Logged out successfully' }
   }
 
-  async show({ params, response }: HttpContext) {
+  async show({ params, response, auth }: HttpContext) {
     try {
       const participante = await Participante.findByOrFail('id', params.id)
+      if (participante.id !== auth.user!.id) {
+        return response.status(403).json({ error: 'You cannot inspect this user' })
+      }
       return participante
     } catch {
       return response.status(404).json({ error: 'Participante not found' })
     }
   }
 
-  async update({ params, request, response }: HttpContext) {
+  async update({ request, response, auth }: HttpContext) {
+    const idParticipante = auth.user!.id
     let participante: Participante
     try {
-      participante = await Participante.findByOrFail('id', params.id)
+      participante = await Participante.findByOrFail('id', idParticipante)
     } catch {
       return response.status(404).json({ error: 'Participante not found' })
     }
 
     // Validação fora do try/catch acima para que erros de validação
     // (ex.: email já em uso) virem 422, e não um 404 enganoso.
+    if (participante.id !== auth.user!.id) {
+      return response.status(403).json({ error: 'You cannot update this user' })
+    }
     const { nome, email, senha, dataNasc } = await request.validateUsing(updateValidator, {
       meta: { participanteId: participante.id },
     })
@@ -82,9 +91,10 @@ export default class ParticipantesController {
     return participante
   }
 
-  async destroy({ params, response }: HttpContext) {
+  async destroy({ response, auth }: HttpContext) {
     try {
-      const participante = await Participante.findByOrFail('id', params.id)
+      const idParticipante = auth.user!.id
+      const participante = await Participante.findByOrFail('id', idParticipante)
       await participante.delete()
       return response.status(204)
     } catch {

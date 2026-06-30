@@ -81,11 +81,11 @@ export interface Registry {
   }
   'participantes.participantes.update': {
     methods: ["PUT"]
-    pattern: '/api/v1/participantes/:id'
+    pattern: '/api/v1/participantes'
     types: {
       body: ExtractBody<InferInput<(typeof import('#validators/participante').updateValidator)>>
-      paramsTuple: [ParamValue]
-      params: { id: ParamValue }
+      paramsTuple: []
+      params: {}
       query: ExtractQuery<InferInput<(typeof import('#validators/participante').updateValidator)>>
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/participantes_controller').default['update']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/participantes_controller').default['update']>>> | { status: 422; response: { errors: SimpleError[] } }
@@ -93,11 +93,11 @@ export interface Registry {
   }
   'participantes.participantes.destroy': {
     methods: ["DELETE"]
-    pattern: '/api/v1/participantes/:id'
+    pattern: '/api/v1/participantes'
     types: {
       body: {}
-      paramsTuple: [ParamValue]
-      params: { id: ParamValue }
+      paramsTuple: []
+      params: {}
       query: {}
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/participantes_controller').default['destroy']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/participantes_controller').default['destroy']>>>
@@ -125,6 +125,18 @@ export interface Registry {
       query: {}
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/eventos_controller').default['show']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/eventos_controller').default['show']>>>
+    }
+  }
+  'eventos.eventos.index_subs': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/v1/eventos/inscritos/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/eventos_controller').default['indexSubs']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/eventos_controller').default['indexSubs']>>>
     }
   }
   'eventos.eventos.store': {

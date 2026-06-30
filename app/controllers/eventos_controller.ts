@@ -1,11 +1,28 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import Evento from '#models/evento'
+import Inscricao from '#models/inscricao'
 import { createEventValidator, updateEventValidator } from '#validators/evento'
 export default class EventosController {
   async index({}: HttpContext) {
     const eventos = await Evento.all()
 
     return eventos
+  }
+  async indexSubs({ params, response }: HttpContext) {
+    const idEvento = params.id
+
+    // 1. Busca todas as inscrições daquele evento
+    const inscricoes = await Inscricao.query()
+      .where('idEvento', idEvento)
+      .preload('participante', (query) => {
+        // 2. Filtra para trazer apenas id e nome do participante
+        query.select('id', 'nome')
+      })
+
+    // 3. Mapeia o resultado para retornar uma lista limpa de participantes
+    const participantes = inscricoes.map((inscricao) => inscricao.participante)
+
+    return response.ok(participantes)
   }
 
   async store({ request, auth }: HttpContext) {

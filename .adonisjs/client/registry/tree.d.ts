@@ -24,6 +24,7 @@ export interface ApiDefinition {
     eventos: {
       index: typeof routes['eventos.eventos.index']
       show: typeof routes['eventos.eventos.show']
+      indexSubs: typeof routes['eventos.eventos.index_subs']
       store: typeof routes['eventos.eventos.store']
       update: typeof routes['eventos.eventos.update']
       destroy: typeof routes['eventos.eventos.destroy']
