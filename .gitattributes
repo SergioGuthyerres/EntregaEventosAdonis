@@ -1,0 +1,4 @@
+# Garante finais de linha LF (Linux) em arquivos usados dentro dos containers,
+# mesmo se o repositório for clonado no Windows.
+* text=auto eol=lf
+*.png binary

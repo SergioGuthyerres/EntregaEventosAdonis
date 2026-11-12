@@ -1,0 +1,100 @@
+# =============================================================================
+# Controle de Eventos API — orquestração com Docker Compose
+#
+#   api  -> AdonisJS (Node 24)   | rede: frontend + backend | porta publicada
+#   db   -> PostgreSQL 16        | rede: backend (interna)  | sem porta publicada
+#
+# Uso:  cp .env.example .env   (preencha APP_KEY)
+#       docker compose up -d
+# =============================================================================
+
+name: controle-eventos
+
+services:
+  # ---------------------------------------------------------------------------
+  # Banco de dados
+  # ---------------------------------------------------------------------------
+  db:
+    image: postgres:16-alpine
+    container_name: eventos-db
+    restart: unless-stopped
+    environment:
+      # Credenciais vêm do arquivo .env (nunca ficam fixas no código)
+      POSTGRES_USER: ${DB_USER:?Defina DB_USER no .env}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?Defina DB_PASSWORD no .env}
+      POSTGRES_DB: ${DB_DATABASE:?Defina DB_DATABASE no .env}
+    volumes:
+      # NAMED VOLUME: os dados do Postgres vivem fora do container.
+      # "docker compose down" remove o container, mas NÃO o volume.
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      # Só considera o banco "saudável" quando ele aceita conexões
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - backend
+    # Repare: NÃO há "ports" aqui. O banco não é acessível pelo host,
+    # apenas por containers da rede "backend" (princípio do menor privilégio).
+
+  # ---------------------------------------------------------------------------
+  # API (AdonisJS)
+  # ---------------------------------------------------------------------------
+  api:
+    # "image": nome da imagem publicada no Docker Hub (docker pull / docker push)
+    image: ${DOCKERHUB_USER:-sergioguthyerres}/controle-eventos-api:${IMAGE_TAG:-latest}
+    # "build": se a imagem não existir localmente, o Compose a constrói pelo Dockerfile
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: eventos-api
+    restart: unless-stopped
+    environment:
+      TZ: ${TZ:-UTC}
+      NODE_ENV: production
+      HOST: 0.0.0.0              # escutar em todas as interfaces do container
+      PORT: 3333                 # porta INTERNA do container
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      APP_KEY: ${APP_KEY:?Defina APP_KEY no .env (veja o README)}
+      APP_URL: http://localhost:${API_PORT:-3333}
+      SESSION_DRIVER: cookie
+      # DB_HOST = nome do serviço. O DNS interno do Docker resolve "db" para o IP
+      # do container do Postgres dentro da rede "backend".
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_DATABASE}
+    ports:
+      # PORT MAPPING  "porta_do_host:porta_do_container"
+      # http://localhost:3333 (host) -> 3333 (container eventos-api)
+      - "${API_PORT:-3333}:3333"
+    depends_on:
+      db:
+        # Só inicia a API depois que o healthcheck do banco passar
+        condition: service_healthy
+    networks:
+      - frontend
+      - backend
+
+# -----------------------------------------------------------------------------
+# Volumes nomeados (gerenciados pelo Docker em /var/lib/docker/volumes/...)
+# -----------------------------------------------------------------------------
+volumes:
+  pgdata:
+    name: controle-eventos-pgdata
+
+# -----------------------------------------------------------------------------
+# Redes (driver bridge = rede virtual privada no host, com DNS interno)
+# -----------------------------------------------------------------------------
+networks:
+  frontend:
+    name: eventos-frontend
+    driver: bridge
+  backend:
+    name: eventos-backend
+    driver: bridge
+    # internal: true -> rede sem rota para fora (sem internet, sem acesso do host).
+    # Só os containers conectados a ela conversam entre si.
+    internal: true

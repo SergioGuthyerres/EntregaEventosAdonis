@@ -96,7 +96,7 @@ export default class ParticipantesController {
       const idParticipante = auth.user!.id
       const participante = await Participante.findByOrFail('id', idParticipante)
       await participante.delete()
-      return response.status(204)
+      return response.noContent()
     } catch {
       return response.status(404).json({ error: 'Participante not found' })
     }

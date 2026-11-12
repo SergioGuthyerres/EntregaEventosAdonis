@@ -50,39 +50,41 @@ export default class EventosController {
   }
 
   async update({ auth, params, request, response }: HttpContext) {
-    try {
-      const evento = await Evento.findByOrFail('id', params.id)
-      const participante = auth.user!
-      const { nome, descricao, dataInicio, dataFinal, local } =
-        await request.validateUsing(updateEventValidator)
-      evento.merge({
-        nome,
-        descricao,
-        dataInicio,
-        dataFinal,
-        local,
-      })
-      if (evento.idOrganizador !== participante.id) {
-        return response.status(403).json({ erro: "You can't update this Event" })
-      }
-      await evento.save()
-      return evento
-    } catch {
+    const evento = await Evento.find(params.id)
+    if (!evento) {
       return response.status(404).json({ erro: 'Evento not Found' })
     }
+
+    const participante = auth.user!
+    if (evento.idOrganizador !== participante.id) {
+      return response.status(403).json({ erro: "You can't update this Event" })
+    }
+
+    // Validação fora de try/catch: erros de validação retornam 422 (e não 404)
+    const { nome, descricao, dataInicio, dataFinal, local } =
+      await request.validateUsing(updateEventValidator)
+    evento.merge({
+      nome,
+      descricao,
+      dataInicio,
+      dataFinal,
+      local,
+    })
+    await evento.save()
+    return evento
   }
 
   async destroy({ params, auth, response }: HttpContext) {
-    try {
-      const evento = await Evento.findByOrFail('id', params.id)
-      const participante = auth.user!
-      if (evento.idOrganizador !== participante.id) {
-        return response.status(403).json({ erro: "You can't delete this Event" })
-      }
-      await evento.delete()
-      return response.status(203)
-    } catch {
+    const evento = await Evento.find(params.id)
+    if (!evento) {
       return response.status(404).json({ erro: 'Evento not Found' })
     }
+
+    const participante = auth.user!
+    if (evento.idOrganizador !== participante.id) {
+      return response.status(403).json({ erro: "You can't delete this Event" })
+    }
+    await evento.delete()
+    return response.noContent()
   }
 }

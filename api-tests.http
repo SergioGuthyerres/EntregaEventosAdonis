@@ -1,5 +1,5 @@
 ###############################################################################
-# API ProvaFinalAbilio — coleção de testes de todas as rotas
+# Controle de Eventos API — coleção de testes de todas as rotas
 #
 # Como usar:
 #   - VS Code: instale a extensão "REST Client" e clique em "Send Request"
@@ -10,8 +10,8 @@
 # capturado automaticamente na variável {{token}} e reutilizado nas rotas
 # autenticadas.
 #
-# Ajuste @host caso o servidor suba em outra porta (o `node ace serve`
-# mostra a porta no terminal; a porta configurada é 3333).
+# Com Docker: a API fica em http://localhost:3333 (porta mapeada no
+# docker-compose.yml; altere API_PORT no .env se precisar).
 ###############################################################################
 
 @host = http://localhost:3333
@@ -24,8 +24,8 @@
 @inscricaoId = {{inscrever.response.body.id}}
 
 
-### 1) Healthcheck (público)
-GET {{host}}/
+### 1) Healthcheck (público) — confirma API + conexão com o banco
+GET {{host}}/health
 
 
 ### 2) REGISTRO de participante (público)  ->  POST /participantes
@@ -61,8 +61,8 @@ GET {{api}}/participantes/{{participanteId}}
 Authorization: Bearer {{token}}
 
 
-### 6) ATUALIZAR participante (autenticado)  ->  PUT /participantes/:id
-PUT {{api}}/participantes/{{participanteId}}
+### 6) ATUALIZAR o participante logado (autenticado)  ->  PUT /participantes
+PUT {{api}}/participantes
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -95,12 +95,15 @@ Content-Type: application/json
 
 
 ### 9) LISTAR eventos (público)  ->  GET /eventos
-# Obs: o index retorna apenas eventos já encerrados (dataFinal < agora).
 GET {{api}}/eventos
 
 
 ### 10) DETALHE do evento (público)  ->  GET /eventos/:id
 GET {{api}}/eventos/{{eventoId}}
+
+
+### 10b) PARTICIPANTES inscritos no evento (público)  ->  GET /eventos/inscritos/:id
+GET {{api}}/eventos/inscritos/{{eventoId}}
 
 
 ### 11) ATUALIZAR evento (autenticado, só o organizador)  ->  PUT /eventos/:id
@@ -144,12 +147,13 @@ DELETE {{api}}/eventos/{{eventoId}}
 Authorization: Bearer {{token}}
 
 
-### 17) DELETAR participante (autenticado)  ->  DELETE /participantes/:id
-DELETE {{api}}/participantes/{{participanteId}}
+### 17) DELETAR o participante logado (autenticado)  ->  DELETE /participantes
+DELETE {{api}}/participantes
 Authorization: Bearer {{token}}
 
 
 ### 18) LOGOUT (autenticado)  ->  POST /account/logout
+# Obs: rode antes do passo 17 (depois de excluir a conta o token deixa de valer).
 POST {{api}}/account/logout
 Authorization: Bearer {{token}}
 

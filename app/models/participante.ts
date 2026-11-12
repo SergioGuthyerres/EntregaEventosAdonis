@@ -3,7 +3,7 @@ import hash from '@adonisjs/core/services/hash'
 import { compose } from '@adonisjs/core/helpers'
 import { withAuthFinder } from '@adonisjs/auth/mixins/lucid'
 import { type AccessToken, DbAccessTokensProvider } from '@adonisjs/auth/access_tokens'
-import { hasMany } from '@adonisjs/lucid/orm'
+import { column, hasMany } from '@adonisjs/lucid/orm'
 import type { HasMany } from '@adonisjs/lucid/types/relations'
 import Inscricao from './inscricao.ts'
 import Evento from './evento.ts'
@@ -16,6 +16,10 @@ const AuthFinder = withAuthFinder(() => hash.use('scrypt'), {
 export default class Participante extends compose(ParticipanteSchema, AuthFinder) {
   static accessTokens = DbAccessTokensProvider.forModel(Participante)
   declare currentAccessToken?: AccessToken
+
+  // Nunca expor o hash da senha nas respostas JSON
+  @column({ serializeAs: null })
+  declare senha: string
 
   // get initials() {
   //   const [first, last] = this.nome ? this.nome.split(' ') : this.email.split('@')

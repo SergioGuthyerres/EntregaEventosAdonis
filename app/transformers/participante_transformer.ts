@@ -3,13 +3,6 @@ import type Participante from '#models/participante'
 
 export default class ParticipanteTransformer extends BaseTransformer<Participante> {
   toObject() {
-    return this.pick(this.resource, [
-      'id',
-      'nome',
-      'email',
-      'dataNasc',
-      'createdAt',
-      'updatedAt',
-    ])
+    return this.pick(this.resource, ['id', 'nome', 'email', 'dataNasc', 'createdAt', 'updatedAt'])
   }
 }

@@ -10,9 +10,31 @@
 import { middleware } from '#start/kernel'
 import router from '@adonisjs/core/services/router'
 import { controllers } from '#generated/controllers'
+import db from '@adonisjs/lucid/services/db'
+import env from '#start/env'
 
 router.get('/', () => {
-  return { hello: 'world' }
+  return {
+    api: 'Controle de Eventos API',
+    versao: 'v1',
+    docs: 'Veja o README.md e o arquivo api-tests.http',
+    health: '/health',
+    rotas: ['/api/v1/participantes', '/api/v1/eventos', '/api/v1/inscricoes'],
+  }
+})
+
+/**
+ * Healthcheck: confirma que a API está de pé E que consegue falar com o
+ * PostgreSQL. Dentro do Docker, DB_HOST = "db" (nome do serviço no compose),
+ * resolvido pelo DNS interno do Docker.
+ */
+router.get('/health', async ({ response }) => {
+  try {
+    await db.rawQuery('SELECT 1')
+    return { status: 'ok', database: 'up', dbHost: env.get('DB_HOST') }
+  } catch {
+    return response.serviceUnavailable({ status: 'error', database: 'down' })
+  }
 })
 
 router

@@ -1,0 +1,40 @@
+# =============================================================================
+# .dockerignore — o que NÃO entra no contexto de build da imagem
+# Contexto menor = build mais rápido; e nenhum segredo vaza para dentro da imagem.
+# =============================================================================
+
+# Dependências e builds locais (são gerados DENTRO do container)
+node_modules
+build
+tmp
+
+# Segredos e variáveis locais (NUNCA vão para a imagem)
+.env
+.env.*
+!.env.example
+
+# Git e metadados
+.git
+.gitignore
+.gitattributes
+
+# Arquivos do Docker (não são necessários dentro da imagem)
+Dockerfile
+.dockerignore
+docker-compose*.yml
+compose*.yml
+
+# Documentação, diagramas e testes manuais
+README.md
+docs
+*.png
+api-tests.http
+
+# Editores, logs e lixo de sistema
+.vscode
+.idea
+.fleet
+*.log
+npm-debug.log*
+.DS_Store
+coverage
